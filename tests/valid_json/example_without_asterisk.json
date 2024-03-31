@@ -1,0 +1,51 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Resources": {
+    "MyIAMRolePolicy": {
+      "Type": "AWS::IAM::Policy",
+      "Properties": {
+        "PolicyName": "MyIAMRolePolicy",
+        "PolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Action": [
+                "s3:GetObject",
+                "s3:PutObject"
+              ],
+              "Resource": "arn:aws:s3:::my-bucket/*"
+            },
+            {
+              "Effect": "Allow",
+              "Action": "dynamodb:PutItem",
+              "Resource": "arn:aws:dynamodb:us-east-1:123456789012:table/MyTable"
+            }
+          ]
+        },
+        "Roles": [
+          {
+            "Ref": "MyIAMRole"
+          }
+        ]
+      }
+    },
+    "MyIAMRole": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "ec2.amazonaws.com"
+              },
+              "Action": "sts:AssumeRole"
+            }
+          ]
+        }
+      }
+    }
+  }
+}
