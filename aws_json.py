@@ -3,8 +3,8 @@ import re
 
 DEBUG = False
 
-# I understand that in all cases, except of valid AWS::IAM::Role Policy data with asterisk (*) in 'Resource' field, the program will return True,
-# including cases with wrong data format.
+# I understand that in all cases, except for valid AWS::IAM::Role Policy data with an asterisk (*) in the 'Resource' field, 
+# the program will return True, including cases with incorrect data formats.
 
 def debug_print(s):
     if DEBUG:
@@ -26,6 +26,14 @@ def check_requirements_for_statement(data):
         debug_print("Invalid AWS::IAM::Role Policy: wrong data format")
         return False
     
+    if map_of_statements["Effect"] not in ["Allow", "Deny"]:
+        debug_print("Invalid AWS::IAM::Role Policy: wrong Effect format")
+        return False
+    
+    if type(map_of_statements["Action"]) is not list:
+        debug_print("Invalid AWS::IAM::Role Policy: wrong Action format")
+        return False
+    
     return True
 
 
@@ -33,8 +41,12 @@ def check_if_asterisk_in_resource(data):
     if data == "*":
         return False
     else:
-        debug_print("Lack of asterisk (*) in 'Resource' field.")
-        return True
+        if type(data) is not list:
+            debug_print("Invalid AWS::IAM::Role Policy: wrong Resource format")
+            return True
+        else:
+            debug_print("Lack of asterisk (*) in 'Resource' field.")
+            return True
     
 def verify_list_of_statements(list_of_statements):
     if type(list_of_statements) is not list:
@@ -120,7 +132,6 @@ def verify_aws_json_format(json_data):
 
 def operations_on_json(json_data):
     json_data = json.loads(json_data.read())
-
     return (verify_aws_json_format(json_data))
 
 def verify_json_input(path_to_file):

@@ -242,6 +242,21 @@ class TestStatement(unittest.TestCase):
     def test_lack_of_resource(self):
         self.assertEqual(aws_json.verify_list_of_statements([{"Effect": "Allow", "Action": ["iam:ListRoles", "iam:ListUsers"]}]), True)
 
+    def test_multiple_asterisks(self):
+        self.assertEqual(aws_json.verify_list_of_statements([{"Effect": "Allow", "Action": ["iam:ListRoles", "iam:ListUsers"], "Resource": "**"}, {"Effect": "Allow", "Action": ["iam:ListRoles", "iam:ListUsers"], "Resource": "*a"}]), True)
+
+    def test_incorrect_effect(self):
+        self.assertEqual(aws_json.verify_list_of_statements([{"Effect": "Allow2", "Action": ["iam:ListRoles", "iam:ListUsers"], "Resource": "*"}]), True)
+
+    def test_incorrect_action_format(self):
+        self.assertEqual(aws_json.verify_list_of_statements([{"Effect": "Allow", "Action": "iam:ListRoles", "Resource": "*"}]), True)
+
+    def test_correct_resource_without_asterisk(self):
+        self.assertEqual(aws_json.verify_list_of_statements([{"Effect": "Allow", "Action": ["iam:ListRoles", "iam:ListUsers"], "Resource": ["arn:aws:iam::123456789012:role/role-name"]}]), True)
+
+    def test_incorrect_resource_without_asterisk(self):
+        self.assertEqual(aws_json.verify_list_of_statements([{"Effect": "Allow", "Action": ["iam:ListRoles", "iam:ListUsers"], "Resource": "arn:aws:iam::123456789012:role/role-name"}]), True)
+
 def run_tests():
     unittest.TextTestRunner().run(unittest.TestLoader().loadTestsFromTestCase(TestInvalidInput))
     unittest.TextTestRunner().run(unittest.TestLoader().loadTestsFromTestCase(TestCorrectInput))
