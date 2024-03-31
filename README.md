@@ -16,9 +16,7 @@ it might need to be changed according to [this information](https://docs.aws.ama
 
 ### Usage
 To run and manage the project:
-1. Type `python3 menu.py`.
-a) The menu will display in the console, and users can choose what to do.
-b) They may choose to:
+1. Type `python3 menu.py`. The menu will display in the console, and users can choose what to do. They may choose to:
     - Type 'exit' to end the program.
     - Type 'test', then choose whether to turn on debug mode ('yes' or 'no') to run tests.
     - Type 'run', then choose whether to turn on debug mode ('yes' or 'no'), then type the path to the file you want to verify.
